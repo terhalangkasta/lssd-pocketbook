@@ -1,0 +1,9 @@
+{
+  "name": "lssd-handbook",
+  "version": "1.0.0",
+  "description": "Los Santos Sheriff Department — Deputy Handbook",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  }
+}

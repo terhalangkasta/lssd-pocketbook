@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LSSD Deputy Handbook</title>
+  <meta name="description" content="Los Santos Sheriff Department — Deputy Handbook · IME Roleplay" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Mobile top bar -->
+  <header class="topbar">
+    <button id="menuToggle" class="icon-btn" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="topbar-title">
+      <span class="badge-dot"></span> LSSD Handbook
+    </div>
+    <button id="themeToggleMobile" class="icon-btn" aria-label="Toggle theme">◐</button>
+  </header>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-shield">★</div>
+        <div class="brand-text">
+          <h1>LSSD</h1>
+          <p>Deputy Handbook</p>
+        </div>
+      </div>
+
+      <div class="search-wrap">
+        <input type="search" id="search" placeholder="Cari… (mis. 10-4, miranda)" autocomplete="off" />
+        <kbd>/</kbd>
+      </div>
+
+      <div class="shortcuts" id="shortcuts" aria-label="Pintasan halaman"></div>
+
+      <nav id="nav" class="nav"></nav>
+
+      <div class="sidebar-foot">
+        <button id="themeToggle" class="theme-btn">
+          <span class="theme-ico">◐</span>
+          <span class="theme-label">Ganti Tema</span>
+        </button>
+        <p class="src">IME Roleplay · Internal Use</p>
+      </div>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main content -->
+    <main class="content" id="content">
+      <div class="content-inner" id="contentInner"></div>
+      <footer class="page-foot">
+        <p>LSSD Deputy Handbook — disusun dari dokumen internal.</p>
+      </footer>
+    </main>
+  </div>
+
+  <button id="toTop" class="to-top" aria-label="Back to top">↑</button>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
