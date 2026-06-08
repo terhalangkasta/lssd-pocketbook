@@ -76,10 +76,18 @@
     callout: (b) => el("div", "block callout", esc(b.text)),
 
     ranks: (b) => {
+      const rankColors = {
+        "Sheriff": "#3b82f6", "Undersheriff": "#3b82f6", "Assistant Sheriff": "#3b82f6",
+        "Division Chief": "#22c55e", "Area Commander": "#22c55e", "Captain": "#22c55e",
+        "Lieutenant": "#ef4444", "Sergeant": "#ef4444",
+        "Deputy Sheriff 2": "#eab308", "Deputy Sheriff 1": "#eab308", "Deputy Sheriff": "#eab308", "Deputy Sheriff Trainee": "#eab308",
+        "Academy Recruit": "#9ca3af",
+      };
       const wrap = el("div", "block ranks");
       b.items.forEach((r, i) => {
         const row = el("div", "rank");
-        row.innerHTML = `<span class="num">${String(i + 1).padStart(2, "0")}</span><span>${esc(r)}</span><span class="bar"></span>`;
+        const c = rankColors[r] || "#eab308";
+        row.innerHTML = `<span class="num" style="color:${c}">${String(i + 1).padStart(2, "0")}</span><span style="color:${c}">${esc(r)}</span>`;
         wrap.appendChild(row);
       });
       return wrap;
