@@ -1,7 +1,7 @@
 {
-  "name": "lssd-handbook",
+  "name": "lssd-pocketbook",
   "version": "1.0.0",
-  "description": "Los Santos Sheriff Department — Deputy Handbook",
+  "description": "Los Santos Sheriff Department — Deputy Pocketbook",
   "private": true,
   "scripts": {
     "start": "node server.js"

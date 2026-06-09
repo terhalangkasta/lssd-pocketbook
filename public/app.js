@@ -1,4 +1,4 @@
-/* ===== LSSD Handbook — app logic ===== */
+/* ===== LSSD Pocketbook — app logic ===== */
 (function () {
   "use strict";
 
@@ -12,7 +12,7 @@
   const esc = (s) =>
     String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-  const data = window.HANDBOOK;
+  const data = window.POCKETBOOK;
   const nav = $("#nav");
   const root = $("#contentInner");
 
@@ -135,7 +135,8 @@
       const dl = el("dl", "deflist");
       b.items.forEach((it) => {
         const d = el("div", "def");
-        d.innerHTML = `<dt>${esc(it.term)}</dt><dd>${esc(it.desc)}</dd>`;
+        if (it.color) d.style.borderLeft = `3px solid ${it.color}`;
+        d.innerHTML = `<dt${it.color ? ` style="color:${esc(it.color)}"` : ""}>${esc(it.term)}</dt><dd>${esc(it.desc)}</dd>`;
         dl.appendChild(d);
       });
       wrap.appendChild(dl);

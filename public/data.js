@@ -1,10 +1,10 @@
-// LSSD Deputy Handbook — structured content
+// LSSD Deputy Pocketbook — structured content
 // Source: "Tips Membaca Buku Abstrak Organik Kiriman Instagram.pdf"
 // IME Roleplay — Los Santos Sheriff Department
 
-const HANDBOOK = {
+const POCKETBOOK = {
   meta: {
-    title: "LSSD Deputy Handbook",
+    title: "LSSD Deputy Pocketbook",
     subtitle: "Los Santos Sheriff Department · IME Roleplay",
   },
   sections: [
@@ -219,9 +219,9 @@ const HANDBOOK = {
           type: "deflist",
           title: "Priority Codes",
           items: [
-            { term: "Priority 1", desc: "71 (Penembakan), 90 (Perampokan — ada 12 jenis)." },
-            { term: "Priority 2", desc: "78 (Need Assistance Urgent), 31 (Perampokan — 4 jenis), 34 (Narcotics Dealing dekat)." },
-            { term: "Priority 3", desc: "77 (Need Assistance Non-Urgent), 55 (Traffic Stop), 34 (Narcotics Dealing jauh)." },
+            { term: "Priority 1", desc: "71 (Penembakan), 90 (Perampokan — ada 12 jenis).", color: "#ef4444" },
+            { term: "Priority 2", desc: "78 (Need Assistance Urgent), 31 (Perampokan — 4 jenis), 34 (Narcotics Dealing dekat).", color: "#eab308" },
+            { term: "Priority 3", desc: "77 (Need Assistance Non-Urgent), 55 (Traffic Stop), 34 (Narcotics Dealing jauh).", color: "#22c55e" },
           ],
         },
         {
@@ -702,5 +702,5 @@ const HANDBOOK = {
   ],
 };
 
-if (typeof window !== "undefined") window.HANDBOOK = HANDBOOK;
-if (typeof module !== "undefined") module.exports = HANDBOOK;
+if (typeof window !== "undefined") window.POCKETBOOK = POCKETBOOK;
+if (typeof module !== "undefined") module.exports = POCKETBOOK;

@@ -1,4 +1,4 @@
-// LSSD Handbook — zero-dependency static server
+// LSSD Pocketbook — zero-dependency static server
 // Usage: node server.js   (optional: PORT=8080 node server.js)
 
 const http = require("http");
@@ -52,7 +52,7 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log("\n  LSSD Deputy Handbook");
+  console.log("\n  LSSD Deputy Pocketbook");
   console.log("  ─────────────────────────────");
   console.log(`  ▸ Local:  http://localhost:${PORT}`);
   console.log("  ▸ Press Ctrl+C to stop\n");
