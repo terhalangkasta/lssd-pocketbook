@@ -27,7 +27,9 @@
   groups.forEach((g) => {
     const gEl = el("div", "nav-group");
     gEl.dataset.group = g.name;
-    gEl.appendChild(el("div", "nav-group-title", esc(g.name)));
+    const title = el("div", "nav-group-title", esc(g.name));
+    title.addEventListener("click", () => gEl.classList.toggle("collapsed"));
+    gEl.appendChild(title);
     g.items.forEach((s) => {
       const a = el("a", "nav-link");
       a.href = "#" + s.id;
@@ -201,6 +203,105 @@
       c.appendChild(el("p", null, "&ldquo;" + esc(b.text) + "&rdquo;"));
       return c;
     },
+
+    "patrol-form": () => {
+      const wrap = el("div", "block patrol-form");
+      wrap.innerHTML = `
+        <div class="pf-grid">
+          <div class="pf-card"><h4>Deputy Information</h4>
+            <label>Name<input id="pfName" placeholder="Full name"></label>
+            <label>Station<input id="pfStation" placeholder="Station"></label>
+            <label>Rank<input id="pfRank" placeholder="Rank"></label>
+            <label>Badge<input id="pfBadge" placeholder="Badge number"></label>
+          </div>
+        </div>
+        <div class="pf-grid pf-grid-2">
+          <div class="pf-card"><h4>First Report</h4>
+            <label>Title<input id="pf1Title" placeholder="Report title"></label>
+            <label>Date<input type="date" id="pf1Date"></label>
+            <label>Details<textarea id="pf1Details" rows="6" placeholder="Write details..."></textarea></label>
+            <div class="pf-ev-wrap" id="pf1EvWrap"><label>Evidence<input placeholder="https://..." class="pf-ev"></label></div>
+            <button class="pf-btn-sm" id="pf1AddEv">+ Evidence</button>
+          </div>
+          <div class="pf-card"><h4>Second Report</h4>
+            <label>Title<input id="pf2Title" placeholder="Report title"></label>
+            <label>Date<input type="date" id="pf2Date"></label>
+            <label>Details<textarea id="pf2Details" rows="6" placeholder="Write details..."></textarea></label>
+            <div class="pf-ev-wrap" id="pf2EvWrap"><label>Evidence<input placeholder="https://..." class="pf-ev"></label></div>
+            <button class="pf-btn-sm" id="pf2AddEv">+ Evidence</button>
+          </div>
+        </div>
+        <div class="pf-actions">
+          <button class="pf-btn pf-primary" id="pfGenerate">Generate</button>
+          <button class="pf-btn pf-secondary" id="pfCopy">Copy</button>
+          <button class="pf-btn pf-secondary" id="pfClear">Clear</button>
+        </div>
+        <textarea id="pfOutput" class="pf-output" rows="14" readonly placeholder="Output will appear here..."></textarea>
+        <div class="pf-preview-title">Preview</div>
+        <div id="pfPreview" class="pf-preview"></div>`;
+
+      setTimeout(() => {
+        const v = (id, fb="Answer") => (document.getElementById(id).value.trim() || fb);
+        const fmtDate = id => { const d=document.getElementById(id).value; if(!d)return"-"; const[y,m,dd]=d.split("-"); return `${dd}/${m}/${y}`; };
+
+        // Dynamic evidence
+        const addEv = (wrapId) => {
+          const lbl = document.createElement("label");
+          lbl.textContent = "Evidence";
+          const inp = document.createElement("input");
+          inp.placeholder = "https://...";
+          inp.className = "pf-ev";
+          lbl.appendChild(inp);
+          document.getElementById(wrapId).appendChild(lbl);
+        };
+        document.getElementById("pf1AddEv").onclick = () => addEv("pf1EvWrap");
+        document.getElementById("pf2AddEv").onclick = () => addEv("pf2EvWrap");
+
+        const getEvidence = (wrapId) => {
+          const links = Array.from(document.getElementById(wrapId).querySelectorAll(".pf-ev")).map(i=>i.value.trim()).filter(Boolean).map(l=>`[spoiler][img]${l}[/img][/spoiler]`);
+          return links.length ? links.join("\n") : "-";
+        };
+
+        function bbToHtml(bb) {
+          // Handle nested divbox by repeatedly replacing innermost
+          let html = bb;
+          while (/\[divbox=([^\]]+)\]((?:(?!\[divbox)[\s\S])*?)\[\/divbox\]/gi.test(html)) {
+            html = html.replace(/\[divbox=([^\]]+)\]((?:(?!\[divbox)[\s\S])*?)\[\/divbox\]/gi, (_, c, content) => {
+              const bg = c === 'white' ? 'var(--surface-2)' : c;
+              return `<div style="background:${bg};border:1px solid var(--border);border-radius:6px;padding:10px;margin:6px 0">${content}</div>`;
+            });
+          }
+          return html
+            .replace(/\[b\]([\s\S]*?)\[\/b\]/gi,'<b>$1</b>')
+            .replace(/\[i\]([\s\S]*?)\[\/i\]/gi,'<i>$1</i>')
+            .replace(/\[color=([^\]]+)\]([\s\S]*?)\[\/color\]/gi,'<span style="color:$1">$2</span>')
+            .replace(/\[center\]([\s\S]*?)\[\/center\]/gi,'<div style="text-align:center">$1</div>')
+            .replace(/\[img\]([\s\S]*?)\[\/img\]/gi,'<img src="$1" style="max-width:100%;border-radius:4px;margin:4px 0">')
+            .replace(/\[spoiler\]([\s\S]*?)\[\/spoiler\]/gi,'<details><summary>Spoiler</summary>$1</details>')
+            .replace(/\n/g,'<br>');
+        }
+
+        function autoBold(text) {
+          if(!text||text==="-") return text;
+          const ph=[]; const pr=v=>{const t=`@@B${ph.length}@@`;ph.push(v);return t;};
+          let f=text.replace(/\[b\][\s\S]*?\[\/b\]/gi,pr);
+          [/\b\d{1,2}\s+(?:Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember|January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\b/gi,/\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b/g,/\b(?:pukul|jam|time)\s*\d{1,2}[:.]\d{2}\b/gi,/\b\d{1,2}[:.]\d{2}\b/g,/\b(?:Deputy|Officer|Sheriff|Sergeant|Corporal|Lieutenant|Detective)\s+[A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*)*\b/g,/\b(?:suspect|witness|korban|pelaku|saksi)\b/gi,/\b[A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*)*\s+(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Station)\b/g,/\b(?:lokasi|location|area)\b/gi,/\b(?:perampokan bersenjata|armed robbery|robbery|shooting|pursuit|traffic stop|patroli|pemeriksaan|kejadian|incident|violation)\b/gi,/\b(?:kendaraan\s+berjenis|vehicle\s+model|model)\s+[A-Za-z0-9\s-]+?(?=\s+(?:berwarna|dengan|with)|[,.]|$)/gi,/\b(?:berwarna|warna|color(?:ed)?)\s+[A-Za-z]+\b/gi,/\b(?:Plate(?:\s+Nomor)?|License\s+Plate|Plat(?:e)?(?:\s+Nomor)?)\s*[:#-]?\s*[A-Z0-9-]{2,}\b/gi,/\b(?:karena|because|reason|alasan|mengapa|kenapa)\b/gi].forEach(p=>{f=f.replace(p,m=>pr(`[b]${m}[/b]`));});
+          return ph.reduce((r,val,i)=>r.replace(`@@B${i}@@`,val),f);
+        }
+
+        const buildReport=(label,tId,dId,dtId,evWrapId)=>`[divbox=white]\n[b]${label} - ${v(tId,"<Insert Report Title>")}[/b]\n\n[b]Date:[/b]\n[divbox=white] ${fmtDate(dId)} [/divbox]\n\n[b]Details:[/b]\n[divbox=white] ${autoBold(v(dtId,"-"))} [/divbox]\n\n[b]Evidence:[/b]\n[divbox=white] \n${getEvidence(evWrapId)}\n[/divbox]\n\n[/divbox]`;
+
+        document.getElementById("pfGenerate").onclick=()=>{
+          const bb=`[divbox=white]\n[center][img]https://imagizer.imageshack.com/v2/200x200q70/924/Rs1Hi8.png[/img][/center]\n[/divbox]\n[divbox=#008040]\n[center][b][color=#FFFFFF]Los Santos Sheriff Department[/color][/b][/center]\n[/divbox]\n\n[divbox=white]\n[center][b]Patrol Report[/b][/center]\n[divbox=white]\n[b]Name:[/b] ${v("pfName")}\n[b]Station:[/b] ${v("pfStation")}\n[b]Rank:[/b] ${v("pfRank")}\n[b]Badge:[/b] ${v("pfBadge")}\n[/divbox]\n\n${buildReport("First Report","pf1Title","pf1Date","pf1Details","pf1EvWrap")}\n\n${buildReport("Second Report","pf2Title","pf2Date","pf2Details","pf2EvWrap")}\n[/divbox]`;
+          document.getElementById("pfOutput").value=bb;
+          document.getElementById("pfPreview").innerHTML=bbToHtml(bb);
+        };
+        document.getElementById("pfCopy").onclick=()=>navigator.clipboard.writeText(document.getElementById("pfOutput").value);
+        document.getElementById("pfClear").onclick=()=>{wrap.querySelectorAll("input,textarea").forEach(i=>i.value="");document.getElementById("pfPreview").innerHTML="";};
+      }, 0);
+
+      return wrap;
+    },
   };
 
   /* ---------- Render sections ---------- */
@@ -310,7 +411,6 @@
     localStorage.setItem("lssd-theme", next);
   }
   $("#themeToggle").addEventListener("click", toggleTheme);
-  $("#themeToggleMobile").addEventListener("click", toggleTheme);
 
   /* ---------- Mobile sidebar ---------- */
   const sidebar = $("#sidebar");

@@ -20,7 +20,7 @@
     <div class="topbar-title">
       <span class="badge-dot"></span> LSSD Pocketbook
     </div>
-    <button id="themeToggleMobile" class="icon-btn" aria-label="Toggle theme">◐</button>
+    <button id="themeToggleMobile" class="icon-btn" style="display:none" aria-label="Toggle theme">◐</button>
   </header>
 
   <div class="layout">
@@ -44,10 +44,6 @@
       <nav id="nav" class="nav"></nav>
 
       <div class="sidebar-foot">
-        <button id="themeToggle" class="theme-btn">
-          <span class="theme-ico">◐</span>
-          <span class="theme-label">Ganti Tema</span>
-        </button>
         <p class="src">LSSD · Internal Use</p>
       </div>
     </aside>
@@ -63,6 +59,7 @@
     </main>
   </div>
 
+  <button id="themeToggle" class="theme-fixed" aria-label="Toggle theme">◐</button>
   <button id="toTop" class="to-top" aria-label="Back to top">↑</button>
 
   <script src="data.js"></script>

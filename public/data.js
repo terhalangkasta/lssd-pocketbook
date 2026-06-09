@@ -700,6 +700,17 @@ const POCKETBOOK = {
         },
       ],
     },
+    {
+      id: "patrol-report",
+      icon: "📋",
+      title: "Patrol Report Generator",
+      group: "Form Helper",
+      blocks: [
+        {
+          type: "patrol-form",
+        },
+      ],
+    },
   ],
 };
 
