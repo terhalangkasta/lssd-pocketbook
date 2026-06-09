@@ -38,8 +38,8 @@
   --text: #1a1d24;
   --text-dim: #5c6370;
   --text-faint: #9099a6;
-  --accent: #2E3E2B;
-  --accent-soft: rgba(46, 62, 43, .1);
+  --accent: #7da876;
+  --accent-soft: rgba(125, 168, 118, .14);
   --accent-2: #2563eb;
   --danger: #dc2626;
   --shadow: 0 8px 30px rgba(20, 26, 40, .1);
@@ -315,7 +315,7 @@ tbody td:first-child { font-family: var(--mono); font-weight: 600; color: var(--
 .step p { font-size: 14px; color: var(--text-dim); }
 
 /* Bullets */
-.bullets { display: grid; gap: 9px; }
+.bullets { display: grid; gap: 9px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
 .bullets li { list-style: none; position: relative; padding-left: 22px; color: var(--text-dim); font-size: 14.5px; }
 .bullets li::before { content: ""; position: absolute; left: 4px; top: 9px; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); }
 .bullets li b, .bullets li strong { color: var(--text); }

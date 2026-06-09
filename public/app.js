@@ -47,7 +47,7 @@
 
   const hero = el("div", "hero");
   hero.innerHTML = `
-    <span class="hero-tag">IME Roleplay · INTERNAL</span>
+    <span class="hero-tag">LSSD · INTERNAL</span>
     <h1>${esc(data.meta.title)}</h1>
     <p>${esc(data.meta.subtitle)}</p>
     <div class="hero-stats">

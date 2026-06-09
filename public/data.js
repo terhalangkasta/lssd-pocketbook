@@ -1,11 +1,11 @@
 // LSSD Deputy Pocketbook — structured content
 // Source: "Tips Membaca Buku Abstrak Organik Kiriman Instagram.pdf"
-// IME Roleplay — Los Santos Sheriff Department
+// Los Santos Sheriff Department
 
 const POCKETBOOK = {
   meta: {
     title: "LSSD Deputy Pocketbook",
-    subtitle: "Los Santos Sheriff Department · IME Roleplay",
+    subtitle: "Los Santos Sheriff Department",
   },
   sections: [
     {
@@ -674,8 +674,8 @@ const POCKETBOOK = {
             "Misdemeanor Possession of Schedule II — meth/cocaine < 100 gram.",
             "Felony Possession of Schedule II — meth/cocaine > 100 gram.",
             "Distribute of a Schedule Category — kedua jenis narcotics total > 800 gram.",
-            "Drug Smuggling — kedua jenis narcotics total > 2000 gram (2.3 kg).",
-            "Drug Trafficking — kedua jenis narcotics total > 4000 gram (4.2 kg).",
+            "Drug Smuggling — kedua jenis narcotics total > 2000 gram.",
+            "Drug Trafficking — kedua jenis narcotics total > 4000 gram.",
             "Possession of Drug Paraphernalia — alat produksi (A < 10, B > 10): Meth Oven, Meth Table, Bagging Table, Baggy, Planting Pot, Cannabis Seed, Weed, Phos, Pseudo, Acid, Liquid Meth, Meth.",
             "Drug Manufacturing — melakukan proses produksi kedua jenis schedule controlled substances.",
           ],
@@ -692,6 +692,7 @@ const POCKETBOOK = {
           type: "bullets",
           items: [
             "Possession of Unauthorized Device (Hacking Device) — membawa lockpick atau kartu seperti green card.",
+            "Minor Possession of Illegal Money — uang merah < 50.000.",
             "Third Degree Possession of Illegal Money — uang merah < 149.999.",
             "Second Degree Possession of Illegal Money — uang merah < 399.999.",
             "First Degree Possession of Illegal Money (Court Verdict) — uang merah > 400.000.",
