@@ -219,8 +219,8 @@ const POCKETBOOK = {
           type: "deflist",
           title: "Priority Codes",
           items: [
-            { term: "Priority 1", desc: "71 (Penembakan), 90 (Perampokan — ada 12 jenis), 13a (Burglary / Pencurian Rumah)", color: "#ef4444" },
-            { term: "Priority 2", desc: "78 (Need Assistance Urgent), 31 (Perampokan — 4 jenis), 34 (Narcotics Dealing dekat), 13b (Store Robbery / Pencurian Toko).", color: "#eab308" },
+            { term: "Priority 1", desc: "71 (Penembakan), 90 (Perampokan — ada 12 jenis), 13a (Burglary / Pencurian Rumah), dan Hostaging", color: "#ef4444" },
+            { term: "Priority 2", desc: "78 (Need Assistance Urgent), 31 (Perampokan — 4 jenis), 34 (Narcotics Dealing dekat), dan 13b (Store Robbery / Pencurian Toko).", color: "#eab308" },
             { term: "Priority 3", desc: "77 (Need Assistance Non-Urgent), 55 (Traffic Stop), 34 (Narcotics Dealing jauh).", color: "#22c55e" },
           ],
         },
