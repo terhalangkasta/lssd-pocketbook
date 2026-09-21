@@ -219,14 +219,36 @@
           <div class="pf-card"><h4>First Report</h4>
             <label>Title<input id="pf1Title" placeholder="Report title"></label>
             <label>Date<input type="date" id="pf1Date"></label>
-            <label>Details<textarea id="pf1Details" rows="6" placeholder="Write details..."></textarea></label>
+            <div class="pf-details-group">
+              <label>Details</label>
+              <div class="pf-bb-bar" data-target="pf1Details">
+                <button type="button" class="pf-bb-btn" data-tag="b" title="Bold"><b>B</b></button>
+                <button type="button" class="pf-bb-btn" data-tag="i" title="Italic"><i>I</i></button>
+                <button type="button" class="pf-bb-btn" data-tag="u" title="Underline"><u>U</u></button>
+                <button type="button" class="pf-bb-btn pf-bb-color" data-tag="color" title="Color">Color</button>
+                <button type="button" class="pf-bb-btn" data-tag="center" title="Center">Center</button>
+                <button type="button" class="pf-bb-btn" data-tag="img" title="Image">Img</button>
+              </div>
+              <textarea id="pf1Details" rows="6" placeholder="Write details..."></textarea>
+            </div>
             <div class="pf-ev-wrap" id="pf1EvWrap"><label>Evidence<input placeholder="https://..." class="pf-ev"></label></div>
             <button class="pf-btn-sm" id="pf1AddEv">+ Evidence</button>
           </div>
           <div class="pf-card"><h4>Second Report</h4>
             <label>Title<input id="pf2Title" placeholder="Report title"></label>
             <label>Date<input type="date" id="pf2Date"></label>
-            <label>Details<textarea id="pf2Details" rows="6" placeholder="Write details..."></textarea></label>
+            <div class="pf-details-group">
+              <label>Details</label>
+              <div class="pf-bb-bar" data-target="pf2Details">
+                <button type="button" class="pf-bb-btn" data-tag="b" title="Bold"><b>B</b></button>
+                <button type="button" class="pf-bb-btn" data-tag="i" title="Italic"><i>I</i></button>
+                <button type="button" class="pf-bb-btn" data-tag="u" title="Underline"><u>U</u></button>
+                <button type="button" class="pf-bb-btn pf-bb-color" data-tag="color" title="Color">Color</button>
+                <button type="button" class="pf-bb-btn" data-tag="center" title="Center">Center</button>
+                <button type="button" class="pf-bb-btn" data-tag="img" title="Image">Img</button>
+              </div>
+              <textarea id="pf2Details" rows="6" placeholder="Write details..."></textarea>
+            </div>
             <div class="pf-ev-wrap" id="pf2EvWrap"><label>Evidence<input placeholder="https://..." class="pf-ev"></label></div>
             <button class="pf-btn-sm" id="pf2AddEv">+ Evidence</button>
           </div>
@@ -257,6 +279,35 @@
         document.getElementById("pf1AddEv").onclick = () => addEv("pf1EvWrap");
         document.getElementById("pf2AddEv").onclick = () => addEv("pf2EvWrap");
 
+        wrap.querySelectorAll(".pf-bb-btn").forEach(btn => {
+          btn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const targetId = btn.closest(".pf-bb-bar").dataset.target;
+            const ta = document.getElementById(targetId);
+            const tag = btn.dataset.tag;
+            const start = ta.selectionStart;
+            const end = ta.selectionEnd;
+            const sel = ta.value.substring(start, end);
+            const placeholder = { b: "Bold text", i: "Italic text", u: "Underline text", color: "Color text", center: "Center text", img: "Image URL" }[tag] || "text";
+            if (tag === "color") {
+              const color = prompt("Enter color (e.g. #FF0000, red):", "#FFFFFF");
+              if (color === null) return;
+              const insert = sel ? `[color=${color}]${sel}[/color]` : `[color=${color}]${placeholder}[/color]`;
+              ta.setRangeText(insert, start, end, "select");
+            } else if (tag === "img") {
+              const url = prompt("Enter image URL:", "https://");
+              if (url === null) return;
+              const insert = `[img]${url}[/img]`;
+              ta.setRangeText(insert, start, end, "select");
+            } else {
+              const insert = sel ? `[${tag}]${sel}[/${tag}]` : `[${tag}]${placeholder}[/${tag}]`;
+              ta.setRangeText(insert, start, end, "select");
+            }
+            ta.focus();
+          };
+        });
+
         const getEvidence = (wrapId) => {
           const links = Array.from(document.getElementById(wrapId).querySelectorAll(".pf-ev")).map(i=>i.value.trim()).filter(Boolean).map(l=>`[spoiler][img]${l}[/img][/spoiler]`);
           return links.length ? links.join("\n") : "-";
@@ -274,6 +325,7 @@
           return html
             .replace(/\[b\]([\s\S]*?)\[\/b\]/gi,'<b>$1</b>')
             .replace(/\[i\]([\s\S]*?)\[\/i\]/gi,'<i>$1</i>')
+            .replace(/\[u\]([\s\S]*?)\[\/u\]/gi,'<u>$1</u>')
             .replace(/\[color=([^\]]+)\]([\s\S]*?)\[\/color\]/gi,'<span style="color:$1">$2</span>')
             .replace(/\[center\]([\s\S]*?)\[\/center\]/gi,'<div style="text-align:center">$1</div>')
             .replace(/\[img\]([\s\S]*?)\[\/img\]/gi,'<img src="$1" style="max-width:100%;border-radius:4px;margin:4px 0">')
