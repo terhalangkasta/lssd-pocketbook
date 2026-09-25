@@ -354,6 +354,116 @@
 
       return wrap;
     },
+
+    "daily-form": () => {
+      const wrap = el("div", "block patrol-form");
+      wrap.innerHTML = `
+        <div class="pf-grid">
+          <div class="pf-card"><h4>Personnel Information</h4>
+            <label>Trainee Name<input id="dalName" placeholder="Firstname Lastname"></label>
+            <label>Current Phase<select id="dalPhase" style="width:100%;margin-top:3px;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;font-family:var(--font)"><option>PHASE I</option><option>PHASE II</option><option>PHASE III</option><option>PHASE IV</option></select></label>
+            <label>Training Officer (TO)<input id="dalTO" placeholder="Rank Firstname Lastname"></label>
+            <label>Patrol Date<input type="date" id="dalDate"></label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <label>Start<input type="time" id="dalStart"></label>
+              <label>End<input type="time" id="dalEnd"></label>
+            </div>
+          </div>
+        </div>
+        <div class="pf-grid">
+          <div class="pf-card"><h4>Activity Summary</h4>
+            <textarea id="dalSummary" rows="5" placeholder="Narasi shift: jenis panggilan, area patroli, interaksi publik..."></textarea>
+          </div>
+        </div>
+        <div class="pf-grid pf-grid-2">
+          <div class="pf-card"><h4>What I Learned Today</h4>
+            <textarea id="dalLearned" rows="5" placeholder="Contoh: prosedur 10-55 yang aman di malam hari..."></textarea>
+          </div>
+          <div class="pf-card"><h4>Mistakes &amp; Improvements</h4>
+            <textarea id="dalMistakes" rows="5" placeholder="Contoh: lupa Miranda Rights, dikoreksi TO..."></textarea>
+          </div>
+        </div>
+        <div class="pf-grid">
+          <div class="pf-card"><h4>Field Evidence</h4>
+            <div class="pf-ev-wrap" id="dalEvWrap"><label>Evidence<input placeholder="https://..." class="pf-ev"></label><label>Evidence<input placeholder="https://..." class="pf-ev"></label></div>
+            <button class="pf-btn-sm" id="dalAddEv">+ Evidence</button>
+          </div>
+        </div>
+        <div class="pf-actions">
+          <button class="pf-btn pf-primary" id="dalGenerate">Generate</button>
+          <button class="pf-btn pf-secondary" id="dalCopy">Copy</button>
+          <button class="pf-btn pf-secondary" id="dalClear">Clear</button>
+        </div>
+        <textarea id="dalOutput" class="pf-output" rows="14" readonly placeholder="Output will appear here..."></textarea>
+        <div class="pf-preview-title">Preview</div>
+        <div id="dalPreview" class="pf-preview"></div>`;
+
+      setTimeout(() => {
+        const v = (id, fb="Answer") => (document.getElementById(id).value.trim() || fb);
+        const fmtDate = id => { const d=document.getElementById(id).value; if(!d)return"DD/MM/YYYY"; const[y,m,dd]=d.split("-"); return `${dd}/${m}/${y}`; };
+        const duration = () => {
+          const s=document.getElementById("dalStart").value, e=document.getElementById("dalEnd").value;
+          if(!s||!e) return `${s||"00:00"} - ${e||"00:00"} (Total jam)`;
+          const[sh,sm]=s.split(":").map(Number),[eh,em]=e.split(":").map(Number);
+          let mins=(eh*60+em)-(sh*60+sm); if(mins<0)mins+=24*60;
+          const h=Math.floor(mins/60), m=mins%60;
+          const tot=m?`${h} jam ${m} menit`:`${h} jam`;
+          return `${s} - ${e} (${tot})`;
+        };
+
+        document.getElementById("dalAddEv").onclick = () => {
+          const lbl = document.createElement("label");
+          lbl.textContent = "Evidence";
+          const inp = document.createElement("input");
+          inp.placeholder = "https://...";
+          inp.className = "pf-ev";
+          lbl.appendChild(inp);
+          document.getElementById("dalEvWrap").appendChild(lbl);
+        };
+
+        const getEvidence = () => {
+          const links = Array.from(document.getElementById("dalEvWrap").querySelectorAll(".pf-ev")).map(i=>i.value.trim()).filter(Boolean).map(l=>`[spoiler][img]${l}[/img][/spoiler]`);
+          return links.length ? links.join("\n") : "[spoiler][img]PASTE LINK DISINI[/img][/spoiler]\n[spoiler][img]PASTE LINK DISINI[/img][/spoiler]";
+        };
+
+        function bbToHtml(bb) {
+          let html = bb;
+          while (/\[divbox=([^\]]+)\]((?:(?!\[divbox)[\s\S])*?)\[\/divbox\]/gi.test(html)) {
+            html = html.replace(/\[divbox=([^\]]+)\]((?:(?!\[divbox)[\s\S])*?)\[\/divbox\]/gi, (_, c, content) => {
+              const bg = c === 'white' ? 'var(--surface-2)' : c;
+              return `<div style="background:${bg};border:1px solid var(--border);border-radius:6px;padding:10px;margin:6px 0">${content}</div>`;
+            });
+          }
+          return html
+            .replace(/\[b\]([\s\S]*?)\[\/b\]/gi,'<b>$1</b>')
+            .replace(/\[i\]([\s\S]*?)\[\/i\]/gi,'<i>$1</i>')
+            .replace(/\[u\]([\s\S]*?)\[\/u\]/gi,'<u>$1</u>')
+            .replace(/\[color=([^\]]+)\]([\s\S]*?)\[\/color\]/gi,'<span style="color:$1">$2</span>')
+            .replace(/\[size=([^\]]+)\]([\s\S]*?)\[\/size\]/gi,'<span style="font-size:$1%">$2</span>')
+            .replace(/\[center\]([\s\S]*?)\[\/center\]/gi,'<div style="text-align:center">$1</div>')
+            .replace(/\[justify\]([\s\S]*?)\[\/justify\]/gi,'<div style="text-align:justify">$1</div>')
+            .replace(/\[quote\]([\s\S]*?)\[\/quote\]/gi,'<blockquote style="border-left:3px solid var(--accent);padding:6px 12px;margin:6px 0;opacity:.9">$1</blockquote>')
+            .replace(/\[img\]([\s\S]*?)\[\/img\]/gi,'<img src="$1" style="max-width:100%;border-radius:4px;margin:4px 0">')
+            .replace(/\[spoiler\]([\s\S]*?)\[\/spoiler\]/gi,'<details><summary>Spoiler</summary>$1</details>')
+            .replace(/\[list\]([\s\S]*?)\[\/list\]/gi,'<ul style="list-style:disc;padding-left:20px">$1</ul>')
+            .replace(/\[\*\]/g,'<li>')
+            .replace(/\[hr\]\s*\[\/hr\]/gi,'<hr style="border:none;border-top:1px solid var(--border);margin:8px 0">')
+            .replace(/\[hr\]/gi,'<hr style="border:none;border-top:1px solid var(--border);margin:8px 0">')
+            .replace(/\[\/hr\]/gi,'')
+            .replace(/\n/g,'<br>');
+        }
+
+        document.getElementById("dalGenerate").onclick=()=>{
+          const bb=`[divbox=#f4f4f4]\n[center][img]https://i.imgur.com/xq2MhgS.png[/img]\n[size=160][b]LOS SANTOS COUNTY SHERIFF'S DEPARTMENT[/b][/size]\n[size=130][b]DEPUTY SHERIFF TRAINEE - DAILY ACTIVITY LOG[/b][/size][/center]\n[hr][/hr]\n\n[divbox=white]\n[size=130][color=#006400][b]Ⅰ. PERSONNEL INFORMATION[/b][/color][/size]\n[list]\n[*] [b]Trainee Name:[/b] ${v("dalName","Firstname Lastname")}\n[*] [b]Current Phase:[/b] ${document.getElementById("dalPhase").value}\n[*] [b]Training Officer (TO):[/b] ${v("dalTO","Rank Firstname Lastname")}\n[*] [b]Patrol Date & Duration:[/b] ${fmtDate("dalDate")} | ${duration()}\n[/list]\n\n[hr][/hr]\n\n[size=130][color=#006400][b]Ⅱ. ACTIVITY SUMMARY[/b][/color][/size]\n[justify]Sebutkan secara naratif apa saja yang Anda lakukan selama shift ini. Fokus pada jenis panggilan yang diterima, area patroli, dan interaksi publik yang terjadi.[/justify]\n[quote]${v("dalSummary","Jawaban Anda di sini...")}[/quote]\n\n\n[hr][/hr]\n\n[size=130][color=#006400][b]Ⅲ. KNOWLEDGE ACQUISITION & FEEDBACK[/b][/color][/size]\n[b]What I Learned Today:[/b]\n\n[quote]${v("dalLearned","(Contoh: Belajar prosedur 10-55 yang aman di malam hari, cara penggunaan radio darurat, dll.)")}[/quote]\n\n\n[b]Mistakes & Improvements:[/b]\n\n[quote]${v("dalMistakes","(Contoh: Lupa membacakan Miranda Rights, TO mengoreksi posisi berdiri saya saat traffic stop agar lebih aman.)")}[/quote]\n\n\n[hr][/hr]\n\n[size=130][color=#006400][b]Ⅳ. FIELD EVIDENCE[/b][/color][/size]\n${getEvidence()}\n\n[hr][/hr]\n[center][size=85][i]This log is an official part of the Field Training Program and will be reviewed by the Administrative Services Division.[/i][/size][/center]\n[/divbox]\n[/divbox]`;
+          document.getElementById("dalOutput").value=bb;
+          document.getElementById("dalPreview").innerHTML=bbToHtml(bb);
+        };
+        document.getElementById("dalCopy").onclick=()=>navigator.clipboard.writeText(document.getElementById("dalOutput").value);
+        document.getElementById("dalClear").onclick=()=>{wrap.querySelectorAll("input,textarea").forEach(i=>i.value="");document.getElementById("dalPreview").innerHTML="";};
+      }, 0);
+
+      return wrap;
+    },
   };
 
   /* ---------- Render sections ---------- */

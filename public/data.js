@@ -711,6 +711,17 @@ const POCKETBOOK = {
         },
       ],
     },
+    {
+      id: "daily-activity-log",
+      icon: "📝",
+      title: "Daily Activity Log Generator",
+      group: "Form Helper",
+      blocks: [
+        {
+          type: "daily-form",
+        },
+      ],
+    },
   ],
 };
 
